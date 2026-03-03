@@ -1,0 +1,6 @@
+download_directory: "./downloads"
+files:
+  - url: "http://e7.c.lencr.org/33.crl"
+    filename: "33.crl"
+  - url: "http://e7.c.lencr.org/32.crl"
+    filename: "32.crl"
