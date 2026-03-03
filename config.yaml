@@ -1,4 +1,5 @@
 download_directory: "./downloads"
+worker_limit: 5
 files:
   - url: "http://e7.c.lencr.org/33.crl"
     filename: "33.crl"

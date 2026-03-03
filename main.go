@@ -14,8 +14,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Config now includes WorkerLimit
 type Config struct {
 	DownloadDir string `yaml:"download_directory"`
+	WorkerLimit int    `yaml:"worker_limit"`
 	Files       []File `yaml:"files"`
 }
 
@@ -39,38 +41,59 @@ func main() {
 		log.Fatalf("Error creating download directory: %v", err)
 	}
 
-	var wg sync.WaitGroup
-
-	for _, file := range config.Files {
-		wg.Add(1)
-		destPath := filepath.Join(config.DownloadDir, file.Filename)
-		
-		// Pass the DownloadDir as well so we can create temp files on the same drive
-		go downloadAndVerifyFile(file.URL, destPath, config.DownloadDir, &wg)
+	// 1. Determine the worker limit (use a fallback if missing or invalid)
+	numWorkers := config.WorkerLimit
+	if numWorkers <= 0 {
+		fmt.Println("Warning: Invalid or missing worker_limit in config. Defaulting to 3.")
+		numWorkers = 3
+	} else {
+		fmt.Printf("Starting worker pool with %d workers.\n", numWorkers)
 	}
 
+	// 2. Create a buffered channel to hold our download jobs
+	jobs := make(chan File, len(config.Files))
+	var wg sync.WaitGroup
+
+	// 3. Start the worker pool using the configured limit
+	for w := 1; w <= numWorkers; w++ {
+		wg.Add(1)
+		go worker(w, jobs, config.DownloadDir, &wg)
+	}
+
+	// 4. Send all files into the jobs channel
+	for _, file := range config.Files {
+		jobs <- file
+	}
+	
+	close(jobs)
+
+	// 5. Wait for all workers to finish
 	wg.Wait()
 	fmt.Println("All downloads processed successfully.")
 }
 
-// downloadAndVerifyFile handles fetching, hashing, and replacing the file if necessary
-func downloadAndVerifyFile(url, destPath, destDir string, wg *sync.WaitGroup) {
+// worker constantly pulls from the jobs channel until it is closed and empty
+func worker(id int, jobs <-chan File, destDir string, wg *sync.WaitGroup) {
 	defer wg.Done()
+	
+	for file := range jobs {
+		destPath := filepath.Join(destDir, file.Filename)
+		downloadAndVerifyFile(file.URL, destPath, destDir)
+	}
+}
 
+// downloadAndVerifyFile handles fetching, hashing, and replacing the file if necessary
+func downloadAndVerifyFile(url, destPath, destDir string) {
 	fmt.Printf("Checking %s...\n", destPath)
 
-	// 1. Create a temporary file in the destination directory
 	tempFile, err := os.CreateTemp(destDir, "temp-dl-*")
 	if err != nil {
 		log.Printf("Failed to create temp file for %s: %v\n", url, err)
 		return
 	}
 	tempName := tempFile.Name()
-	
-	// Ensure the temp file is cleaned up if we exit early or after renaming
 	defer os.Remove(tempName) 
 
-	// 2. Download the file into the temporary file
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Printf("Failed to download %s: %v\n", url, err)
@@ -87,27 +110,22 @@ func downloadAndVerifyFile(url, destPath, destDir string, wg *sync.WaitGroup) {
 		log.Printf("Failed to write data to temp file for %s: %v\n", url, err)
 		return
 	}
-	
-	// We must close the temp file before we can read it to hash it, or rename it (especially on Windows)
 	tempFile.Close() 
 
-	// 3. Calculate the hash of the newly downloaded file
 	newHash, err := hashFile(tempName)
 	if err != nil {
 		log.Printf("Failed to hash temp file for %s: %v\n", url, err)
 		return
 	}
 
-	// 4. Check if the target file exists and compare hashes
 	if _, err := os.Stat(destPath); err == nil {
 		existingHash, err := hashFile(destPath)
 		if err == nil && newHash == existingHash {
 			fmt.Printf("Skipped: %s (Identical file already exists)\n", destPath)
-			return // The defer os.Remove will silently clean up the temp file
+			return
 		}
 	}
 
-	// 5. Move the temp file to the final destination (overwriting if it exists but differs)
 	if err := os.Rename(tempName, destPath); err != nil {
 		log.Printf("Failed to move temp file to %s: %v\n", destPath, err)
 		return
@@ -116,7 +134,7 @@ func downloadAndVerifyFile(url, destPath, destDir string, wg *sync.WaitGroup) {
 	fmt.Printf("Successfully updated/downloaded: %s\n", destPath)
 }
 
-// hashFile is a helper function that generates a SHA-256 hash string for a given file
+// hashFile generates a SHA-256 hash string for a given file
 func hashFile(filePath string) (string, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
