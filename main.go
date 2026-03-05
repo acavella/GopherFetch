@@ -10,15 +10,21 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
 
-// Config now includes WorkerLimit
+var appVersion = "0.0.0"
+var appBuild = "UNK"
+var appBuildDate = "00000000-0000"
+
 type Config struct {
-	DownloadDir string `yaml:"download_directory"`
-	WorkerLimit int    `yaml:"worker_limit"`
-	Files       []File `yaml:"files"`
+	DownloadDir        string `yaml:"download_directory"`
+	WorkerLimit        int    `yaml:"worker_limit"`
+	RunIntervalSeconds int    `yaml:"run_interval_seconds"`
+	Files              []File `yaml:"files"`
 }
 
 type File struct {
@@ -26,56 +32,88 @@ type File struct {
 	Filename string `yaml:"filename"`
 }
 
-func main() {
-	yamlFile, err := os.ReadFile("config.yaml")
-	if err != nil {
-		log.Fatalf("Error reading config.yaml: %v", err)
-	}
-
+// loadConfig reads and parses the YAML file
+func loadConfig(path string) (Config, error) {
 	var config Config
-	if err = yaml.Unmarshal(yamlFile, &config); err != nil {
-		log.Fatalf("Error parsing YAML: %v", err)
+	yamlFile, err := os.ReadFile(path)
+	if err != nil {
+		return config, err
+	}
+	err = yaml.Unmarshal(yamlFile, &config)
+	return config, err
+}
+
+func main() {
+	configFile := "config.yaml"
+
+	// 1. Load config for the first initial run
+	config, err := loadConfig(configFile)
+	if err != nil {
+		log.Fatalf("Initial config load failed: %v", err)
+	}
+	printver()
+	// 2. Run the download process immediately
+	executeDownloads(config)
+
+	// 3. Check if we should loop or exit
+	if config.RunIntervalSeconds <= 0 {
+		fmt.Println("No run_interval_seconds configured (or set to 0). Running once and exiting.")
+		return
 	}
 
-	if err = os.MkdirAll(config.DownloadDir, os.ModePerm); err != nil {
-		log.Fatalf("Error creating download directory: %v", err)
+	// 4. Set up the Ticker for the loop
+	ticker := time.NewTicker(time.Duration(config.RunIntervalSeconds) * time.Second)
+	defer ticker.Stop()
+
+	fmt.Printf("Started polling every %d seconds. Press Ctrl+C to stop.\n", config.RunIntervalSeconds)
+
+	// 5. The continuous loop
+	for range ticker.C {
+		// Hot-Reload: Re-read the config every cycle so changes take effect immediately
+		newConfig, err := loadConfig(configFile)
+		if err != nil {
+			log.Printf("Failed to reload config (skipping this cycle): %v\n", err)
+			continue // Skip to the next tick rather than crashing the program
+		}
+		
+		config = newConfig
+		executeDownloads(config)
+	}
+}
+
+// executeDownloads sets up the worker pool and processes the file queue
+func executeDownloads(config Config) {
+	if err := os.MkdirAll(config.DownloadDir, os.ModePerm); err != nil {
+		log.Printf("Error creating download directory: %v\n", err)
+		return
 	}
 
-	// 1. Determine the worker limit (use a fallback if missing or invalid)
 	numWorkers := config.WorkerLimit
 	if numWorkers <= 0 {
-		fmt.Println("Warning: Invalid or missing worker_limit in config. Defaulting to 3.")
 		numWorkers = 3
-	} else {
-		fmt.Printf("Starting worker pool with %d workers.\n", numWorkers)
 	}
 
-	// 2. Create a buffered channel to hold our download jobs
 	jobs := make(chan File, len(config.Files))
 	var wg sync.WaitGroup
 
-	// 3. Start the worker pool using the configured limit
 	for w := 1; w <= numWorkers; w++ {
 		wg.Add(1)
 		go worker(w, jobs, config.DownloadDir, &wg)
 	}
 
-	// 4. Send all files into the jobs channel
 	for _, file := range config.Files {
 		jobs <- file
 	}
-	
 	close(jobs)
 
-	// 5. Wait for all workers to finish
 	wg.Wait()
-	fmt.Println("All downloads processed successfully.")
+	fmt.Printf("[%s] Download cycle completed.\n", time.Now().Format("15:04:05"))
+	fmt.Println(strings.Repeat("-", 40))
 }
 
 // worker constantly pulls from the jobs channel until it is closed and empty
 func worker(id int, jobs <-chan File, destDir string, wg *sync.WaitGroup) {
 	defer wg.Done()
-	
 	for file := range jobs {
 		destPath := filepath.Join(destDir, file.Filename)
 		downloadAndVerifyFile(file.URL, destPath, destDir)
@@ -84,15 +122,13 @@ func worker(id int, jobs <-chan File, destDir string, wg *sync.WaitGroup) {
 
 // downloadAndVerifyFile handles fetching, hashing, and replacing the file if necessary
 func downloadAndVerifyFile(url, destPath, destDir string) {
-	fmt.Printf("Checking %s...\n", destPath)
-
 	tempFile, err := os.CreateTemp(destDir, "temp-dl-*")
 	if err != nil {
 		log.Printf("Failed to create temp file for %s: %v\n", url, err)
 		return
 	}
 	tempName := tempFile.Name()
-	defer os.Remove(tempName) 
+	defer os.Remove(tempName)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -110,7 +146,7 @@ func downloadAndVerifyFile(url, destPath, destDir string) {
 		log.Printf("Failed to write data to temp file for %s: %v\n", url, err)
 		return
 	}
-	tempFile.Close() 
+	tempFile.Close()
 
 	newHash, err := hashFile(tempName)
 	if err != nil {
@@ -121,7 +157,7 @@ func downloadAndVerifyFile(url, destPath, destDir string) {
 	if _, err := os.Stat(destPath); err == nil {
 		existingHash, err := hashFile(destPath)
 		if err == nil && newHash == existingHash {
-			fmt.Printf("Skipped: %s (Identical file already exists)\n", destPath)
+			// Silently skip to avoid spamming the console every 60 seconds
 			return
 		}
 	}
@@ -148,4 +184,10 @@ func hashFile(filePath string) (string, error) {
 	}
 
 	return hex.EncodeToString(hasher.Sum(nil)), nil
+}
+
+func printver() {
+	fmt.Printf("[%s] GoRevoke ver. %s\n", time.Now().Format("15:04:05"), appVersion)
+	fmt.Printf("[%s] Build Type: %s\n", time.Now().Format("15:04:05"), appBuild)
+	fmt.Printf("[%s] Build Date: %s\n", time.Now().Format("15:04:05"), appBuildDate)
 }
