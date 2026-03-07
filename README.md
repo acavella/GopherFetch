@@ -27,33 +27,15 @@ GoRevoke is a standalone [Certificate Revocation List](https://en.wikipedia.org/
 
 ## Installation Instructions
 
-GoRevoke can be deployed as either a containerized image or installed natively on the host. The following instructions outline basic installation and configuration options.
-
-### Docker Deployment
-
-1. Copy and rename the configuration example `gorevoke.yml` to a path on your host system, e.g. `$HOME/gorevoke.yml`
-2. Pull the latest image from Docker Hub using the following example Docker run command:
-```Shell
-docker run -d \
---name gorevoke \
--p 80:4000 \
--v /path/to/gorevoke.yml:/etc/gorevoke.yml \
---restart=unless-stopped \
-ghcr.io/acavella/gorevoke:latest
-```
-
-> [!IMPORTANT]
-> The Docker Run command above exposes the built-in webserver to the host directly on port 80 and is not recommended for production deploys. For a production configuration we recommend placing a webserver or proxy (such as Apache httpd or nginx) in front of GoRevoke to handle public web requests.
-
 ### Native Deployment
 
-1. Download the [latest release](https://github.com/acavella/gorevoke/releases/latest/) archive for the appropriate platform 
-   - Linux (amd64): gorevoke-<version>-linux-amd64.tar.gz
-   - Windows (amd64): gorevoke-<version>-windows-amd64.zip
+1. Download the [latest release](https://github.com/acavella/GopherFetch/releases/latest/) archive for the appropriate platform 
+   - Linux (amd64): gfetch-<version>-linux-amd64.tar.gz
+   - Windows (amd64): gfetch-<version>-windows-amd64.zip
 2. Extract the archive to the appropriate application directory
    - Linux: `/usr/local/bin`
    - Windows: `C:\Program Files\`
-3. (optional) Edit the provided example configuration file `gorevoke.yml` and save it as `/etc/gorevoke.yml`
+3. Edit the provided example configuration file `gfetch.yaml` and save it as `/etc/gfetch.yaml`
 4. (optional) Create a system user for GoRevoke: `useradd --system --no-create-home --shell=/sbin/nologin gorevoke`
 5. Create a systemd service file `/etc/systemd/service/gorevoke.service`. Example unit files:
 ```ini
@@ -71,26 +53,7 @@ Restart=always
 [Install]
 WantedBy=multi-user.target default.target
 ```
-```ini
-### Using configuration via environment vars
-[Unit]
-Description=GoRevoke CDP Server
-After=network-online.target
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/gorevoke
-User=gorevoke
-Environment=GOREVOKE_DEFAULT_INTERVAL=900
-Environment=GOREVOKE_DEFAULT_WEBSERVER=true
-Environment=GOREVOKE_DEFAULT_CRLDIR=/var/www/public_html
-Environment=GOREVOKE_CRLS='{"x21":"http://crls.pki.goog/gts1c3/zdATt0Ex_Fk.crl", "x11":"http://crl.godaddy.com/gdig2s1-5609.crl"}'
-Restart=always
-
-[Install]
-WantedBy=multi-user.target default.target
-```
-6. Set the permissions `sudo chmod 664 /etc/systemd/service/gorevoke.service`
+6. Set the permissions `sudo chmod 664 /etc/systemd/service/gfetch.service`
 7. Reload the systemd configuration `sudo systemctl daemon-reload`
 8. Enable and start the service:
 ```shell
