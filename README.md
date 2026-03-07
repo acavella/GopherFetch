@@ -3,7 +3,7 @@
 <!-- PROJECT SHIELDS -->
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/acavella/GopherFetch/gorelease.yml?logo=go)
 ![GitHub License](https://img.shields.io/github/license/acavella/GopherFetch)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/acavella/GopherFetch)
+![GitHub Release](https://img.shields.io/github/v/release/acavella/GopherFetch?include_prereleases)
 
 ## Overview
 *The Gopher-powered Concurrent File Retrieval Tool*
