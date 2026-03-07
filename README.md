@@ -55,8 +55,7 @@ sudo systemctl enable --now gfetch.service
 ## Configuration
 A list of all available configuration options is available in the sample yaml config file [gfetch.sample.yaml](gfetch.sample.yaml), with comments provided inline. Configuration is set via a static file, in which case the following paths are checked:
 
-- `$PWD/gfetch.yaml`
-- `$HOME/.gfetch/gfetch.yaml`
+- `./gfetch.yaml`
 - `/etc/gfetch.yaml`
 
 ## Security Vulnerabilities
