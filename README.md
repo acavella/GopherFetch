@@ -1,12 +1,13 @@
-# GoRevoke
+# GopherFetch
 
 <!-- PROJECT SHIELDS -->
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/acavella/gorevoke/gorelease.yml?logo=go)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/acavella/gorevoke/dockerbuild.yml?logo=docker)
-![GitHub License](https://img.shields.io/github/license/acavella/gorevoke)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/acavella/gorevoke)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/acavella/gopherfetch/gorelease.yml?logo=go)
+![GitHub License](https://img.shields.io/github/license/acavella/gopherfetch)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/acavella/gopherfetch)
 
 ## Overview
+
+The Gopher-powered Concurrent File Retrieval Tool
 
 GoRevoke is a standalone [Certificate Revocation List](https://en.wikipedia.org/wiki/Certificate_revocation_list) Distrution Point written in [Go](https://go.dev/), designed to be lightweight and fully self-contained. Using a simple configuration, GoRevoke automates downloading and serving of remote CRLs. GoRevoke is based on, [revoke](https://github.com/acavella/revoke), a shell based script providing similar function.
 
