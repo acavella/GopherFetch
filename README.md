@@ -7,9 +7,8 @@
 
 ## Overview
 
-The Gopher-powered Concurrent File Retrieval Tool
-
-GoRevoke is a standalone [Certificate Revocation List](https://en.wikipedia.org/wiki/Certificate_revocation_list) Distrution Point written in [Go](https://go.dev/), designed to be lightweight and fully self-contained. Using a simple configuration, GoRevoke automates downloading and serving of remote CRLs. GoRevoke is based on, [revoke](https://github.com/acavella/revoke), a shell based script providing similar function.
+*The Gopher-powered Concurrent File Retrieval Tool*
+GopherFetch (gfetch) is a standalone file sync service used to retrieve files from remote http(s) destinations to a local directory. GopherFetch is written in [Go](https://go.dev/), designed to be lightweight and fully self-contained using a simple configuration. 
 
 ### Key Features
 
@@ -57,7 +56,7 @@ WantedBy=multi-user.target default.target
 7. Reload the systemd configuration `sudo systemctl daemon-reload`
 8. Enable and start the service:
 ```shell
-sudo systemctl enable --now gorevoke.service
+sudo systemctl enable --now gfetch.service
 ```
 
 ## Configuration
