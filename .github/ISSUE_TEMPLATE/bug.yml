@@ -33,8 +33,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: GoRevoke Version
-      description: "Please provide script debug version (./gorevoke --version)."
+      label: Version
+      description: "Please provide script debug version (./gfetch --version)."
       placeholder: "v8.6.1"
     validations:
       required: true
