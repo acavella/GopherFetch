@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
-	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -44,14 +44,33 @@ func loadConfig(path string) (Config, error) {
 }
 
 func main() {
-	configFile := "config.yaml"
-
-	// 1. Load config for the first initial run
-	config, err := loadConfig(configFile)
-	if err != nil {
-		log.Fatalf("Initial config load failed: %v", err)
+	// Define the locations to check, in order of priority
+	configPaths := []string{
+		"gfetch.yaml",
+		"/etc/gfetch.yaml",
 	}
+
+	var config Config
+	var loadedPath string
+	var err error
+
+	// 1. Search for and load the config file
+	for _, path := range configPaths {
+		config, err = loadConfig(path)
+		if err == nil {
+			loadedPath = path
+			fmt.Printf("Loaded configuration from: %s\n", loadedPath)
+			break
+		}
+	}
+
+	if loadedPath == "" {
+		log.Fatalf("Failed to load configuration. Searched in: %v", configPaths)
+	}
+
+	// Print version and build info at startup
 	printver()
+
 	// 2. Run the download process immediately
 	executeDownloads(config)
 
@@ -69,11 +88,11 @@ func main() {
 
 	// 5. The continuous loop
 	for range ticker.C {
-		// Hot-Reload: Re-read the config every cycle so changes take effect immediately
-		newConfig, err := loadConfig(configFile)
+		// Hot-Reload: Re-read from the path we successfully found earlier
+		newConfig, err := loadConfig(loadedPath)
 		if err != nil {
-			log.Printf("Failed to reload config (skipping this cycle): %v\n", err)
-			continue // Skip to the next tick rather than crashing the program
+			log.Printf("Failed to reload config from %s (skipping this cycle): %v\n", loadedPath, err)
+			continue
 		}
 		
 		config = newConfig
@@ -157,8 +176,7 @@ func downloadAndVerifyFile(url, destPath, destDir string) {
 	if _, err := os.Stat(destPath); err == nil {
 		existingHash, err := hashFile(destPath)
 		if err == nil && newHash == existingHash {
-			// Silently skip to avoid spamming the console every 60 seconds
-			return
+			return // Silently skip identical files
 		}
 	}
 

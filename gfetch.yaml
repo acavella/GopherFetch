@@ -1,0 +1,12 @@
+download_directory: "./downloads"
+worker_limit: 5
+run_interval_seconds: 300 # The program will check for downloads every 5 minutes
+files:
+  - url: "http://e7.c.lencr.org/33.crl"
+    filename: "33.crl"
+  - url: "http://e7.c.lencr.org/32.crl"
+    filename: "32.crl"
+  - url: "http://e7.c.lencr.org/31.crl"
+    filename: "31.crl"
+  - url: "http://e7.c.lencr.org/30.crl"
+    filename: "30.crl"
