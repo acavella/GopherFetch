@@ -47,7 +47,7 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/gfetch
-User=gorevoke
+User=gfetch
 Restart=always
 
 [Install]
