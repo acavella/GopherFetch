@@ -41,7 +41,7 @@ GoRevoke is a standalone [Certificate Revocation List](https://en.wikipedia.org/
 ```ini
 ### Using a static-file configuration
 [Unit]
-Description=GoRevoke CDP Server
+Description=GopherFetch File Retrieval Server
 After=network-online.target
 
 [Service]
