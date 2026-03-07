@@ -8,21 +8,14 @@
 ## Overview
 *The Gopher-powered Concurrent File Retrieval Tool*
 
-GopherFetch (gfetch) is a standalone file sync service used to retrieve files from remote http(s) destinations to a local directory. GopherFetch is written in [Go](https://go.dev/), designed to be lightweight and fully self-contained using a simple configuration. 
+GophFetch (gfetch) is a high-performance, concurrent file retrieval utility written in [Go](https://go.dev/). Designed to act as a tireless digital "go-fer," it automates the synchronization of local file repositories with remote sources defined in a centralized configuration. By leveraging Go's native concurrency primitives, GophFetch manages multiple downloads simultaneously while enforcing strict data integrity through cryptographic hashing. This makes it an ideal solution for maintaining local mirrors of frequently updated assets, such as Certificate Revocation Lists (CRLs), security definitions, or remote configuration files.
 
 ### Key Features
 
-- Cross-platform compatiblity; tested on Linux and Windows
-- Native and containerized deployment options
-- Retrieve remote CRL data via HTTP or HTTPS
-- Validation and confirmation of CRL data
-- Built-in webserver alleviates the need for additional servers
-- Ability to retrieve and serve an unlimited number of CRL sources
-- Support for full and delta CRLs
-
-### Planned Features
-
-- OCSP responder
+- **Concurrent Worker Pool**: Efficiently handles bulk downloads by distributing the workload across a configurable pool of Gopher workers, preventing system resource exhaustion while maximizing throughput.
+- **Integrity Verification**: Uses SHA-256 checksums to compare remote assets against existing local files. If the hashes match, the program skips the download to save bandwidth and reduce disk I/O.
+- **Heartbeat Synchronization**: Runs on a user-defined interval, ensuring your local directory stays in "Steady State" with remote sources without manual intervention.
+- **Hot-Reloading Configuration**: Monitors its own YAML configuration file for changes. Updates to URLs, file paths, or worker counts are applied on the next sync cycle without requiring a process restart.
 
 ## Installation Instructions
 
@@ -60,41 +53,29 @@ sudo systemctl enable --now gfetch.service
 ```
 
 ## Configuration
-A list of all available configuration options is available at [gorevoke.yml](gorevoke.yml), with comments provided inline. Configuration can be set via a static file, in which case the following paths are checked:
+A list of all available configuration options is available in the sample yaml config file [gfetch.sample.yaml](gfetch.sample.yaml), with comments provided inline. Configuration is set via a static file, in which case the following paths are checked:
 
-- `$PWD/gorevoke.yml`
-- `$HOME/.gorevoke/gorevoke.yml`
-- `/etc/gorevoke.yml`
-
-Optionally, all configuration values can be specified via environment variables, upper-cased and prefixed with `GOREVOKE`. For example, the configuration item `default.interval` can be set via the `GOREVOKE_DEFAULT_INTERVAL` variable. If specifying the list of CRLs as an environment var (`GOREVOKE_CRLS`), the CRLs must be provided as a json dict. See the systemd unit example, above.
-
-## Container Performance
-![Docker Container Performance](assets/docker-stats.png)
+- `$PWD/gfetch.yaml`
+- `$HOME/.gfetch/gfetch.yaml`
+- `/etc/gfetch.yaml`
 
 ## Security Vulnerabilities
 
-I welcome welcome all responsible disclosures. Please do not open an ISSUE to report a security problem. Please use the private reporting system to report security related issues responsibly: https://github.com/acavella/gorevoke/security/advisories/new
+I welcome and appreciate all responsible disclosures. To ensure the safety of our users, **please do not open a public Issue** to report a security vulnerability. Instead, use the GitHub private reporting system to submit your findings securely: https://github.com/acavella/GophFetch/security/advisories/new
 
 ## Contributing
 
-Contributions are essential to the success of open-source projects. In other words, we need your help to keep GoRevoke great!
+Contributions are the lifeblood of open-source projects. Help us keep GophFetch great by participating in the following ways:
 
-What is a contribution? All the following are highly valuable:
+- Propose Best Practices: Share your knowledge of RFC standards and security hardening to help us standardize the tool's behavior.
+- Report Issues: Encountered a bug or an edge case in your deployment? Open an issue and help us squash it.
+- Request Features: Have an idea to make GophFetch faster or more versatile? Suggest an improvement or submit a PR.
 
-1. **Let us know of the best-practices you believe should be standardized**   
-   GoRevoke is designed to be compliant with applicable RFCs out-of-the box. By sharing your experiences and knowledge you help us build a solution that takes into account best-practices and user experience.
+**Important Links**:
 
-2. **Let us know if things aren't working right**   
-   We aim to provide a perfect application and test it extensively, however, we can't imagine or replicate every deployment scenario possible. If you run into an issue that you think isn't normal, please let us know.
-
-3. **Add or improve features**   
-   Have an idea to add or improve functionality, then let us know! We want to make GoRevoke the best total solution it can be.
-
-**General information about contributions:**
-
-Check our [Security Policy](https://github.com/acavella/gorevoke#).   
-Found a bug? Open a [GitHub issue](https://github.com/acavella/gorevoke/issues).   
-Read our [Contributing Code of Conduct](https://github.com/acavella/gorevoke?tab=coc-ov-file#), which contains all the information you need to contribute to GoRevoke!
+- 🛡️ Security: Use our [Private Reporting System](https://www.google.com/search?q=https://github.com/acavella/GophFetch/security/advisories/new) for vulnerabilities.
+- 🐛 Bugs: Tracked via [GitHub Issues](https://www.google.com/search?q=https://github.com/acavella/GophFetch/security/advisories/new).
+- 📜 Rules: See our [Code of Conduct](https://www.google.com/search?q=https://github.com/acavella/GophFetch%3Ftab%3Dcoc-ov-file%23) for community guidelines.
 
 ## License
 
@@ -103,7 +84,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 - Tony Cavella - tony@cavella.com
-- Project Link: [https://github.com/acavella/gorevoke](https://github.com/acavella/gorevoke)
+- Project Link: [https://github.com/acavella/GopherFetch](https://github.com/acavella/GopherFetch)
 
 ## Acknowledgements
 - [@Deliveranc3](https://github.com/Deliveranc3) - Containerfile development and additions to config logic
+
+> [!NOTE]
+> GophFetch was developed using agentic coding methodologies. While the core architecture, security logic, and project direction were defined by the author, AI agents were utilized to assist with boilerplate generation, optimization, and documentation. This collaborative approach allows for faster iteration while maintaining a high standard of code integrity and RFC compliance.
