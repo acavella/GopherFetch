@@ -16,9 +16,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var appVersion = "0.0.0"
+var appVersion = "2603"
 var appBuild = "UNK"
-var appBuildDate = "00000000-0000"
+var appBuildDate = "00000000.0000"
 
 type Config struct {
 	DownloadDir        string `yaml:"download_directory"`
@@ -187,7 +187,8 @@ func hashFile(filePath string) (string, error) {
 }
 
 func printver() {
-	fmt.Printf("[%s] GoRevoke ver. %s\n", time.Now().Format("15:04:05"), appVersion)
-	fmt.Printf("[%s] Build Type: %s\n", time.Now().Format("15:04:05"), appBuild)
-	fmt.Printf("[%s] Build Date: %s\n", time.Now().Format("15:04:05"), appBuildDate)
+	fmt.Printf("GopherFetch - The Gopher-powered Concurrent File Retrieval Tool\n")
+	fmt.Printf("Version: %s\n", appVersion)
+	fmt.Printf("Build: %s\n", appBuildDate)
+	fmt.Printf("Build Type: %s\n", appBuild)
 }
