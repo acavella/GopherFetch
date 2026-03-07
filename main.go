@@ -16,9 +16,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var appVersion = "2603"
+var appVersion = "0000"
 var appBuild = "UNK"
-var appBuildDate = "00000000.0000"
+var appBuildDate = "00000000"
 
 type Config struct {
 	DownloadDir        string `yaml:"download_directory"`
@@ -190,5 +190,5 @@ func printver() {
 	fmt.Printf("GopherFetch - The Gopher-powered Concurrent File Retrieval Tool\n")
 	fmt.Printf("Version: %s\n", appVersion)
 	fmt.Printf("Build: %s\n", appBuildDate)
-	fmt.Printf("Build Type: %s\n", appBuild)
+	fmt.Printf("Architecture: %s\n", appBuild)
 }
