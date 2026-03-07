@@ -6,8 +6,8 @@
 ![GitHub release (with filter)](https://img.shields.io/github/v/release/acavella/gopherfetch)
 
 ## Overview
-
 *The Gopher-powered Concurrent File Retrieval Tool*
+
 GopherFetch (gfetch) is a standalone file sync service used to retrieve files from remote http(s) destinations to a local directory. GopherFetch is written in [Go](https://go.dev/), designed to be lightweight and fully self-contained using a simple configuration. 
 
 ### Key Features
