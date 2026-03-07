@@ -18,7 +18,7 @@ jobs:
         run: |
           {
             echo "RELEASE_TAG=${GITHUB_REF/refs\/tags\//}"
-            echo "BUILD_TIME=$(date | md5sum | head -c 8)"
+            echo "BUILD_TIME=$(date -u +"%Y%m.%d%H%M")"
             echo "BUILD_TYPE=${{ matrix.goos }}-${{ matrix.goarch }}"
           } >> "$GITHUB_ENV"
       - uses: actions/checkout@v3
