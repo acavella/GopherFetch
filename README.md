@@ -36,8 +36,8 @@ GoRevoke is a standalone [Certificate Revocation List](https://en.wikipedia.org/
    - Linux: `/usr/local/bin`
    - Windows: `C:\Program Files\`
 3. Edit the provided example configuration file `gfetch.yaml` and save it as `/etc/gfetch.yaml`
-4. (optional) Create a system user for GoRevoke: `useradd --system --no-create-home --shell=/sbin/nologin gorevoke`
-5. Create a systemd service file `/etc/systemd/service/gorevoke.service`. Example unit files:
+4. (optional) Create a system user for GoRevoke: `useradd --system --no-create-home --shell=/sbin/nologin gfetch`
+5. Create a systemd service file `/etc/systemd/service/gfetch.service`. Example unit files:
 ```ini
 ### Using a static-file configuration
 [Unit]
@@ -46,7 +46,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/gorevoke
+ExecStart=/usr/local/bin/gfetch
 User=gorevoke
 Restart=always
 
