@@ -1,5 +1,4 @@
 # Security Policy
-## Reporting a Vulnerability
-I welcome welcome all responsible disclosures. Please do not open an ISSUE to report a security problem
+Report a Security Vulnerability
 
-Please use the private reporting system to report security related issues responsibly: https://github.com/acavella/gorevoke/security/advisories/new
+Please do not report security vulnerabilities through public GitHub Issues. To report an issue responsibly and privately, please use our dedicated security advisory channel: https://github.com/acavella/GopherFetch/security/advisories/new
