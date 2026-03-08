@@ -55,7 +55,7 @@ func main() {
 	var err error
 
 	// Print version and build info at startup
-	printver()
+	printVersion()
 
 	// 1. Search for and load the config file
 	for _, path := range configPaths {
@@ -204,7 +204,7 @@ func hashFile(filePath string) (string, error) {
 	return hex.EncodeToString(hasher.Sum(nil)), nil
 }
 
-func printver() {
+func printVersion() {
 	fmt.Printf("GopherFetch - The Gopher-powered Concurrent File Retrieval Tool\n")
 	fmt.Printf(" - Version:       %s\n", appVersion)
 	fmt.Printf(" - Build:         %s\n", appBuildDate)
