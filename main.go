@@ -54,6 +54,9 @@ func main() {
 	var loadedPath string
 	var err error
 
+	// Print version and build info at startup
+	printver()
+
 	// 1. Search for and load the config file
 	for _, path := range configPaths {
 		config, err = loadConfig(path)
@@ -67,9 +70,6 @@ func main() {
 	if loadedPath == "" {
 		log.Fatalf("Failed to load configuration. Searched in: %v", configPaths)
 	}
-
-	// Print version and build info at startup
-	printver()
 
 	// 2. Run the download process immediately
 	executeDownloads(config)
@@ -206,7 +206,7 @@ func hashFile(filePath string) (string, error) {
 
 func printver() {
 	fmt.Printf("GopherFetch - The Gopher-powered Concurrent File Retrieval Tool\n")
-	fmt.Printf("Version: %s\n", appVersion)
-	fmt.Printf("Build: %s\n", appBuildDate)
-	fmt.Printf("Architecture: %s\n", appBuild)
+	fmt.Printf(" - Version:       %s\n", appVersion)
+	fmt.Printf(" - Build:         %s\n", appBuildDate)
+	fmt.Printf(" - Architecture:  %s\n", appBuild)
 }
