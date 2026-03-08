@@ -16,9 +16,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var appVersion = "0000"
+var appVersion = "0.0.0"
 var appBuild = "UNK"
-var appBuildDate = "00000000"
+var appBuildDate = "000000.000000"
 
 type Config struct {
 	DownloadDir        string `yaml:"download_directory"`
