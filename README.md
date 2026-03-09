@@ -16,6 +16,7 @@ GopherFetch (gfetch) is a high-performance, concurrent file retrieval utility wr
 - **Integrity Verification**: Uses SHA-256 checksums to compare remote assets against existing local files. If the hashes match, the program skips the download to save bandwidth and reduce disk I/O.
 - **Heartbeat Synchronization**: Runs on a user-defined interval, ensuring your local directory stays in "Steady State" with remote sources without manual intervention.
 - **Hot-Reloading Configuration**: Monitors its own YAML configuration file for changes. Updates to URLs, file paths, or worker counts are applied on the next sync cycle without requiring a process restart.
+- **Validated CRL Retrieval**: Performs x509 cryptographic validation on all detected CRL files to verify their integrity and authenticity. This critical security check guards against replacing a legitimate local CRL with corrupted, or invalid data.
 
 ## Installation Instructions
 
