@@ -2,7 +2,9 @@ package main
 
 import (
 	"crypto/sha256"
+	"crypto/x509"
 	"encoding/hex"
+	"encoding/pem"
 	"fmt"
 	"io"
 	"log"
@@ -165,7 +167,15 @@ func downloadAndVerifyFile(url, destPath, destDir string) {
 		log.Printf("Failed to write data to temp file for %s: %v\n", url, err)
 		return
 	}
-	tempFile.Close()
+	tempFile.Close() // Close before we read it for hashing/validation
+
+	// CRL Validation 
+	if strings.ToLower(filepath.Ext(destPath)) == ".crl" {
+		if err := validateCRL(tempName); err != nil {
+			log.Printf("Validation failed for %s (Not a valid CRL): %v\n", destPath, err)
+			return // Exit early, temp file is deleted via defer, existing file is safe
+		}
+	}
 
 	newHash, err := hashFile(tempName)
 	if err != nil {
@@ -186,6 +196,29 @@ func downloadAndVerifyFile(url, destPath, destDir string) {
 	}
 
 	fmt.Printf("Successfully updated/downloaded: %s\n", destPath)
+}
+
+// validateCRL checks if the downloaded file is a valid Certificate Revocation List
+func validateCRL(filePath string) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return fmt.Errorf("could not read file: %w", err)
+	}
+
+	// 1. Check if the file is PEM encoded. If so, extract the DER binary block.
+	block, _ := pem.Decode(data)
+	if block != nil {
+		// Replace our data variable with the decoded binary payload
+		data = block.Bytes 
+	}
+
+	// 2. Parse the DER data to verify it is structurally a valid CRL
+	_, err = x509.ParseRevocationList(data)
+	if err != nil {
+		return fmt.Errorf("failed to parse CRL: %w", err)
+	}
+
+	return nil
 }
 
 // hashFile generates a SHA-256 hash string for a given file
