@@ -1,0 +1,1 @@
+allow perm=execute exe=/usr/lib/systemd/systemd trust=1 : sha256hash=f4b753fcadfa1db375712cdba711e08b10acbf6b33ab49069499a563d4131dd0
