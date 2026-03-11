@@ -102,7 +102,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - Project Link: [https://github.com/acavella/GopherFetch](https://github.com/acavella/GopherFetch)
 
 ## Acknowledgements
-- [@Deliveranc3](https://github.com/Deliveranc3) - Containerfile development and additions to config logic
+- [@Deliveranc3](https://github.com/Deliveranc3) - fapolicy rules and other contributions
 
 > [!NOTE]
 > GopherFetch was developed using agentic coding methodologies. While the core architecture, security logic, and project direction were defined by the author, AI agents were utilized to assist with boilerplate generation, optimization, and documentation. This collaborative approach allows for faster iteration while maintaining a high standard of code integrity and RFC compliance.
