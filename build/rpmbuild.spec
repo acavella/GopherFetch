@@ -63,5 +63,5 @@ EOF
 %config(noreplace) %{_sysconfdir}/gfetch.sample.yaml
 
 %changelog
-* Mon Mar 09 2026 Developer <mail@example.com> - 1.0.0-1
-- Removed automatic user creation per user request
+* Mon Mar 09 2026 Tony Cavella <tony@cavella.com> - 1.0.0-1
+- Initial release
