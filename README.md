@@ -54,13 +54,19 @@ sudo systemctl enable --now gfetch.service
 ```
 
 ### RPM Deployment
-Use these installation instructions
 
 1. Download the [latest RPM build](https://github.com/acavella/GopherFetch/releases/latest/) appropriate for your platform:
    - EL9 (amd64): gfetch-<version>.fc43.x86_64.rpm
 2. Create a system user for GopherFetch: `useradd --system --no-create-home --shell=/sbin/nologin gfetch`
 3. Install the RPM with the appropriate package manager command, `sudo dnf install gfetch-<version>.fc43.x86_64.rpm`
-4. 
+4. Edit the sample configuration at `/etc/gfetch.sample.yaml` and rename to `/etc/gfetch.yaml`
+   > [!NOTE]
+   > It is important to make sure the `download_directory` is set to a directory that the `gfetch` user has permissions to read/write
+5. Start and enable the gfetch systemd service:
+   ```shell
+   sudo systemctl start gfetch.service
+   sudo systemctl enable gfetch.service
+   ```
 
 ## Configuration
 A list of all available configuration options is available in the sample yaml config file [gfetch.sample.yaml](gfetch.sample.yaml), with comments provided inline. Configuration is set via a static file, in which case the following paths are checked:
