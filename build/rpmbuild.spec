@@ -70,7 +70,7 @@ fi
 %{_bindir}/gfetch
 %{_unitdir}/gfetch.service
 %config(noreplace) %{_sysconfdir}/gfetch.yaml
-%dir %attr(0755, gfetch, gfetch) %{_sharedstatedir}/gfetch
+%dir %{_sharedstatedir}/gfetch
 %{_sysconfdir}/fapolicyd/rules.d/80-gfetch.rules
 
 
