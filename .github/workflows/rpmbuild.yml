@@ -1,0 +1,46 @@
+name: Build RPM Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-rpm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install rpm-build and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm devscripts
+
+      - name: Prepare RPM Build Environment
+        run: |
+          mkdir -p ~/rpmbuild/{SOURCES,SPECS,RPMS,SRPMS,BUILD}
+          # Copy your spec file into the environment
+          cp build/rpmbuild.spec ~/rpmbuild/SPECS/
+
+      - name: Download Binary from Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Use the GitHub CLI to download the specific asset from the new release
+          gh release download ${{ github.event.release.tag_name }} \
+            --pattern "gfetch-*-linux-amd64.tar.gz" \
+            --dir ~/rpmbuild/SOURCES/
+
+      - name: Build RPM
+        run: |
+          # Set version based on the release tag (removing 'v' prefix if exists)
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
+          rpmbuild -ba ~/rpmbuild/SPECS/gfetch.spec \
+            --define "version $VERSION"
+
+      - name: Upload RPM to Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Upload all generated RPMs back to the GitHub Release
+          gh release upload ${{ github.event.release.tag_name }} ~/rpmbuild/RPMS/x86_64/*.rpm
