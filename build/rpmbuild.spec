@@ -77,6 +77,6 @@ fi
 %changelog
 * Mon Mar 09 2026 Tony Cavella <tony@cavella.com> - 1.0.0-1
 - Initial release
-* Mon Mar 11 2026 Tony Cavella <tony@cavella.com> - 1.0.0-2
+* Wed Mar 11 2026 Tony Cavella <tony@cavella.com> - 1.0.0-2
 - Added fapolicy rules
 - Added default download directory creation
