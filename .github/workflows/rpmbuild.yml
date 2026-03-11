@@ -1,8 +1,10 @@
 name: Build RPM Package
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Build Go Binaries"] # Name of the first workflow
+    types:
+      - completed
 
 jobs:
   build-rpm:
