@@ -25,6 +25,7 @@ jobs:
           mkdir -p ~/rpmbuild/{SOURCES,SPECS,RPMS,SRPMS,BUILD}
           # Copy your spec file into the environment
           cp build/rpmbuild.spec ~/rpmbuild/SPECS/
+          cp build/fapolicy.rules ~/rpmbuild/SOURCES/
 
       - name: Download Binary from Release
         env:
