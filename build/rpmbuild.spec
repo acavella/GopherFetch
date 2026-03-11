@@ -29,7 +29,7 @@ mkdir -p %{buildroot}%{_unitdir}
 install -m 0755 gfetch %{buildroot}%{_bindir}/gfetch
 
 # Install config file to /etc
-install -m 0644 gfetch.sample.yaml %{buildroot}%{_sysconfdir}/gfetch.sample.yaml
+install -m 0644 gfetch.sample.yaml %{buildroot}%{_sysconfdir}/gfetch.yaml
 
 # Create systemd service file
 cat <<EOF > %{buildroot}%{_unitdir}/gfetch.service
@@ -60,7 +60,7 @@ EOF
 %{_bindir}/gfetch
 %{_unitdir}/gfetch.service
 # Marking as config(noreplace) to protect user edits
-%config(noreplace) %{_sysconfdir}/gfetch.sample.yaml
+%config(noreplace) %{_sysconfdir}/gfetch.yaml
 
 %changelog
 * Mon Mar 09 2026 Tony Cavella <tony@cavella.com> - 1.0.0-1
