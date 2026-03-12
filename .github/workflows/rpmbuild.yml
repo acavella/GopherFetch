@@ -55,4 +55,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           # Upload all generated RPMs back to the GitHub Release
-          gh release upload ${{ github.event.release.tag_name }} ~/rpmbuild/RPMS/x86_64/*.rpm
+          gh release upload --repo acavella/gopherfetch ${{ github.event.release.tag_name }} ~/rpmbuild/RPMS/x86_64/*.rpm
