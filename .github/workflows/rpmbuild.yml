@@ -39,6 +39,19 @@ jobs:
             --repo acavella/gopherfetch \
             --pattern "gfetch-*-linux-amd64.tar.gz" \
             --dir ~/rpmbuild/SOURCES/
+      
+      - name: Set version to env variable
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Set release tag name as an environment variable for use in the upload command
+          RELEASE_VALUE=$(gh release view --repo acavella/gopherfetch --json tagName --jq .tagName)
+          echo "RELEASE_TAG=$RELEASE_VALUE" >> $GITHUB_ENV
+
+      - name: Update version in rpmbuild.spec
+        run: |
+          # Update the version in the spec file based on the release tag
+          sed -i "s/\(Version:\).*/\1 ${{ env.RELEASE_TAG }}/" ~/rpmbuild/SPECS/rpmbuild.spec
 
       - name: Generate checksum for binary and update fapolicy.rules
         run: |
@@ -54,7 +67,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Set release tag name as an environment variable for use in the upload command
-          RELEASE_TAG=$(gh release view --repo acavella/gopherfetch --json tagName --jq .tagName)
           # Upload all generated RPMs back to the GitHub Release
-          gh release upload --repo acavella/gopherfetch $RELEASE_TAG ~/rpmbuild/RPMS/x86_64/*.rpm
+          gh release upload --repo acavella/gopherfetch ${{ env.RELEASE_TAG }} ~/rpmbuild/RPMS/x86_64/*.rpm
