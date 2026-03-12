@@ -48,7 +48,7 @@ jobs:
           sed -i "s/\(sha256hash=\).*/\sha256hash=$CHECKSUM/" ~/rpmbuild/SOURCES/fapolicy.rules
 
       - name: Build RPM
-        run: rpmbuild -ba ~/rpmbuild/SPECS/gfetch.spec
+        run: rpmbuild -ba ~/rpmbuild/SPECS/rpmbuild.spec
 
       - name: Upload RPM to Release
         env:
