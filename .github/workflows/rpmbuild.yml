@@ -1,0 +1,58 @@
+name: Build RPM Package
+
+on:
+  workflow_run:
+    workflows: ["Build Go Binaries"] # Name of the first workflow
+    types:
+      - completed
+
+jobs:
+  build-rpm:
+    runs-on: ubuntu-latest
+    container:
+      image: almalinux:9
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install rpm-build and dependencies
+        run: |
+          dnf -y install rpm-build rpmdevtools dnf-plugins-core
+          crb enable
+
+      - name: Prepare RPM Build Environment
+        run: |
+          mkdir -p ~/rpmbuild/{SOURCES,SPECS,RPMS,SRPMS,BUILD}
+          # Copy your spec file into the environment
+          cp build/rpmbuild.spec ~/rpmbuild/SPECS/
+          cp build/fapolicy.rules ~/rpmbuild/SOURCES/
+
+      - name: Download Binary from Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Use the GitHub CLI to download the specific asset from the new release
+          gh release download ${{ github.event.release.tag_name }} \
+            --pattern "gfetch-*-linux-amd64.tar.gz" \
+            --dir ~/rpmbuild/SOURCES/
+
+      - name: Generate checksum for binary and update fapolicy.rules
+        run: |
+          # Generate SHA256 checksum for the downloaded binary
+          CHECKSUM=$(sha256sum ~/rpmbuild/SOURCES/gfetch-*-linux-amd64.tar.gz | awk '{print $1}')
+          # Update the fapolicy.rules file with the new checksum
+          sed -i "s/\(sha256hash=\).*/\sha256hash=$CHECKSUM/" ~/rpmbuild/SOURCES/fapolicy.rules
+
+      - name: Build RPM
+        run: |
+          # Set version based on the release tag (removing 'v' prefix if exists)
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
+          rpmbuild -ba ~/rpmbuild/SPECS/gfetch.spec \
+            --define "version $VERSION"
+
+      - name: Upload RPM to Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Upload all generated RPMs back to the GitHub Release
+          gh release upload ${{ github.event.release.tag_name }} ~/rpmbuild/RPMS/x86_64/*.rpm

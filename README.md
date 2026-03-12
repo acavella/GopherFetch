@@ -2,6 +2,7 @@
 
 <!-- PROJECT SHIELDS -->
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/acavella/GopherFetch/gorelease.yml?logo=go)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/acavella/GopherFetch/rpmbuild.yml?logo=almalinux)
 ![GitHub License](https://img.shields.io/github/license/acavella/GopherFetch)
 ![GitHub Release](https://img.shields.io/github/v/release/acavella/GopherFetch?include_prereleases)
 
@@ -53,6 +54,21 @@ WantedBy=multi-user.target default.target
 sudo systemctl enable --now gfetch.service
 ```
 
+### RPM Deployment
+
+1. Download the [latest RPM build](https://github.com/acavella/GopherFetch/releases/latest/) appropriate for your platform:
+   - EL9 (amd64): `gfetch-<version>.el9.x86_64.rpm`
+2. Create a system user for GopherFetch: `useradd --system --no-create-home --shell=/sbin/nologin gfetch`
+3. Install the RPM with the appropriate package manager command, `sudo dnf install gfetch-<version>.fc43.x86_64.rpm`
+4. Edit the configuration at `/etc/gfetch.yaml`
+> [!NOTE]
+> It is important to make sure the `download_directory` is set to a directory that the `gfetch` user has permissions to read/write
+5. Start and enable the gfetch systemd service:
+   ```shell
+   sudo systemctl start gfetch.service
+   sudo systemctl enable gfetch.service
+   ```
+
 ## Configuration
 A list of all available configuration options is available in the sample yaml config file [gfetch.sample.yaml](gfetch.sample.yaml), with comments provided inline. Configuration is set via a static file, in which case the following paths are checked:
 
@@ -87,7 +103,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - Project Link: [https://github.com/acavella/GopherFetch](https://github.com/acavella/GopherFetch)
 
 ## Acknowledgements
-- [@Deliveranc3](https://github.com/Deliveranc3) - Containerfile development and additions to config logic
+- [@Deliveranc3](https://github.com/Deliveranc3) - fapolicy rules and other contributions
 
 > [!NOTE]
 > GopherFetch was developed using agentic coding methodologies. While the core architecture, security logic, and project direction were defined by the author, AI agents were utilized to assist with boilerplate generation, optimization, and documentation. This collaborative approach allows for faster iteration while maintaining a high standard of code integrity and RFC compliance.

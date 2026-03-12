@@ -1,5 +1,5 @@
 # Sample configuration file for GopherFetch. Copy this file to config.yaml and edit the values as needed.
-download_directory: "./downloads"     # Directory where downloaded files will be saved.
+download_directory: "/var/lib/gfetch" # Directory where downloaded files will be saved.
 worker_limit: 5                       # Controls how many concurrent downloads the program will perform.
 run_interval_seconds: 300             # The program will check for downloads every 5 minutes.
 files:                                # List of files to download. Each entry should have a URL and a filename.
