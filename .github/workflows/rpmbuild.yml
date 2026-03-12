@@ -18,6 +18,11 @@ jobs:
       - name: Install rpm-build and dependencies
         run: dnf -y install rpm-build rpmdevtools dnf-plugins-core
 
+      - name: Install GitHub CLI
+        run: |
+          dnf -y install 'https://cli.github.com/packages/rpm/gh-cli.repo'
+          dnf -y install gh
+
       - name: Prepare RPM Build Environment
         run: |
           mkdir -p ~/rpmbuild/{SOURCES,SPECS,RPMS,SRPMS,BUILD}
