@@ -36,6 +36,13 @@ jobs:
             --pattern "gfetch-*-linux-amd64.tar.gz" \
             --dir ~/rpmbuild/SOURCES/
 
+      - name: Generate checksum for binary and update fapolicy.rules
+        run: |
+          # Generate SHA256 checksum for the downloaded binary
+          CHECKSUM=$(sha256sum ~/rpmbuild/SOURCES/gfetch-*-linux-amd64.tar.gz | awk '{print $1}')
+          # Update the fapolicy.rules file with the new checksum
+          sed -i "s/\(sha256hash=\).*/\sha256hash=$CHECKSUM/" ~/rpmbuild/SOURCES/fapolicy.rules
+
       - name: Build RPM
         run: |
           # Set version based on the release tag (removing 'v' prefix if exists)
