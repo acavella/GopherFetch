@@ -20,7 +20,7 @@ jobs:
 
       - name: Install GitHub CLI
         run: |
-          dnf -y install 'https://cli.github.com/packages/rpm/gh-cli.repo'
+          curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo | tee /etc/yum.repos.d/github-cli.repo
           dnf -y install gh
 
       - name: Prepare RPM Build Environment
