@@ -36,6 +36,7 @@ jobs:
         run: |
           # Use the GitHub CLI to download the specific asset from the new release
           gh release download ${{ github.event.release.tag_name }} \
+            --repo acavella/gopherfetch \
             --pattern "gfetch-*-linux-amd64.tar.gz" \
             --dir ~/rpmbuild/SOURCES/
 
