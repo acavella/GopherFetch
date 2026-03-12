@@ -54,5 +54,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Set release tag name as an environment variable for use in the upload command
+          RELEASE_TAG=${{ github.event.release.tag_name }}
           # Upload all generated RPMs back to the GitHub Release
-          gh release upload --repo acavella/gopherfetch ${{ github.event.release.tag_name }} ~/rpmbuild/RPMS/x86_64/*.rpm
+          gh release upload --repo acavella/gopherfetch $RELEASE_TAG ~/rpmbuild/RPMS/x86_64/*.rpm
