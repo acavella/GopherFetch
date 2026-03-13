@@ -2,7 +2,7 @@
 
 Name:           gfetch
 Version:        1.0.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GopherFetch File Retrieval Server
 License:        MIT
 URL:            https://github.com/acavella/GopherFetch
