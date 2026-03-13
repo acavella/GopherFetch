@@ -80,3 +80,5 @@ fi
 * Wed Mar 11 2026 Tony Cavella <tony@cavella.com> - 1.0.0-2
 - Added fapolicy rules
 - Added default download directory creation
+* Wed Mar 11 2026 Tony Cavella <tony@cavella.com> - 1.0.0-3
+- Set appropriate directory ownership and permissions
