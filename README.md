@@ -21,7 +21,7 @@ GopherFetch (gfetch) is a high-performance, concurrent file retrieval utility wr
 
 ## Installation Instructions
 
-### Native Deployment
+### Manual Install
 
 1. Download the [latest release](https://github.com/acavella/GopherFetch/releases/latest/) archive for the appropriate platform 
    - Linux (amd64): gfetch-<version>-linux-amd64.tar.gz
@@ -54,7 +54,7 @@ WantedBy=multi-user.target default.target
 sudo systemctl enable --now gfetch.service
 ```
 
-### RPM Deployment
+### RPM Install
 
 1. Download the [latest RPM build](https://github.com/acavella/GopherFetch/releases/latest/) appropriate for your platform:
    - EL9 (amd64): `gfetch-<version>.el9.x86_64.rpm`
