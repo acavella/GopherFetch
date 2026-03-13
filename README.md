@@ -62,7 +62,7 @@ sudo systemctl enable --now gfetch.service
 3. Install the RPM with the appropriate package manager command, `sudo dnf install gfetch-<version>.fc43.x86_64.rpm`
 4. Edit the configuration at `/etc/gfetch.yaml`
 > [!NOTE]
-> It is important to make sure the `download_directory` is set to a directory that the `gfetch` user has permissions to read/write. The default directory is `/var/lib/gfetch`
+> It is important to make sure the `download_directory` is set to a directory that the `gfetch` user has permissions to read/write. The default directory is `/var/lib/gfetch` and is created with appropriate ownership during installation.
 5. Start and enable the gfetch systemd service:
    ```shell
    sudo systemctl start gfetch.service
