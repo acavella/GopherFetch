@@ -9,8 +9,16 @@ on:
 jobs:
   build-rpm:
     runs-on: ubuntu-latest
+
+    # The matrix defines the versions you want to loop through
+    strategy:
+      matrix:
+        alma_version: [8, 9, 10]
+
+    # This pulls the specific version for each parallel run
     container:
-      image: almalinux:9
+      image: almalinux:${{ matrix.alma_version }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
