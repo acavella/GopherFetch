@@ -12,6 +12,7 @@ Source1:        fapolicy.rules
 
 BuildRequires:  systemd-rpm-macros
 %{?systemd_requires}
+Requires(pre):  shadow-utils
 
 %description
 GopherFetch is a file retrieval server designed for efficient data fetching.
@@ -76,7 +77,7 @@ fi
 
 %changelog
 * Mon Mar 09 2026 Tony Cavella <tony@cavella.com> - 1.0.0-1
-- Initial release
+- Initial release for version 1.0.0
 * Wed Mar 11 2026 Tony Cavella <tony@cavella.com> - 1.0.0-2
 - Added fapolicy rules
 - Added default download directory creation
