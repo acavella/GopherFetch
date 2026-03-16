@@ -90,3 +90,5 @@ fi
 - Added default download directory creation
 * Wed Mar 11 2026 Tony Cavella <tony@cavella.com> - 1.0.0-3
 - Set appropriate directory ownership and permissions
+* Mon Mar 16 2026 Tony Cavella <tony@cavella.com> - 1.0.0-4
+- Add service user/group creation
