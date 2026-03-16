@@ -52,6 +52,13 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
+%pre
+getent group gfetch >/dev/null || groupadd -r gfetch
+getent passwd gfetch >/dev/null || \
+    useradd -r -g gfetch -d %{_sharedstatedir}/gfetch -s /sbin/nologin \
+    -c "GopherFetch System User" gfetch
+exit 0
+
 %post
 %systemd_post gfetch.service
 if [ -x /usr/sbin/fagenrules ]; then
