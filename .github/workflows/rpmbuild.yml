@@ -15,7 +15,7 @@ jobs:
       matrix:
         alma_version: [8, 9, 10]
 
-    # This pulls the specific version for each parallel run
+    # Pulls the specific container version for each parallel run
     container:
       image: almalinux:${{ matrix.alma_version }}
 
