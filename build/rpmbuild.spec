@@ -16,7 +16,6 @@ Requires(pre):  shadow-utils
 
 %description
 GopherFetch is a file retrieval server designed for efficient data fetching.
-Note: This package assumes the 'gfetch' user already exists on the system.
 
 %prep
 %setup -q -c
