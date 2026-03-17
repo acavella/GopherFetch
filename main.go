@@ -47,6 +47,16 @@ func loadConfig(path string) (Config, error) {
 }
 
 func main() {
+	// Define and parse command-line flags
+	versionFlag := flag.Bool("V", false, "Print application version and exit")
+	flag.Parse()
+
+	// If the -V flag was provided, print the version and exit immediately
+	if *versionFlag {
+		fmt.Printf("gfetch %s (%s)\n", appVersion, appBuild)
+		return
+	}
+
 	// Define the locations to check, in order of priority
 	configPaths := []string{
 		"gfetch.yaml",
